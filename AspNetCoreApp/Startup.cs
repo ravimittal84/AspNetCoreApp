@@ -1,5 +1,6 @@
 ﻿using AspNetCoreApp.Models;
 using AspNetCoreApp.Models.Repositories;
+using AspNetCoreApp.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -35,10 +36,21 @@ namespace AspNetCoreApp
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddScoped(sp => ShoppingCart.GetCart(sp));
 
-            services.AddMvcCore().AddRazorViewEngine().AddJsonFormatters();
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddMvcCore()
+                .AddAuthorization(options =>
+                {
+                    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+                    options.AddPolicy("DeletePie", policy => policy.RequireClaim("Delete Pie", "Delete Pie"));
+                    options.AddPolicy("AddPie", policy => policy.RequireClaim("Add Pie", "Add Pie"));
+                    options.AddPolicy("MinOrderAge", policy => policy.Requirements.Add(new MinimumOrderAgeRequirement(18)));
+                })
+                .AddRazorViewEngine()
+                .AddJsonFormatters(); //options => options.ContractResolver = new CamelCasePropertyNamesContractResolver()
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDBContext>();
+
 
             services.Configure<IdentityOptions>(options =>
             {

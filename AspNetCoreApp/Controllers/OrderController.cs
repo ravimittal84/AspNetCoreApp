@@ -23,6 +23,7 @@ namespace AspNetCoreApp.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "MinOrderAge")]
         //[ValidateAntiForgeryToken]
         public IActionResult Checkout(Order order)
         {

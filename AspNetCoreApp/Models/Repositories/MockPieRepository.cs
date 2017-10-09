@@ -22,7 +22,17 @@ namespace AspNetCoreApp.Models.Repositories
             get;
         }
 
+        public void CreatePie(Pie pie)
+        {
+            throw new NotImplementedException();
+        }
+
         public Pie GetPieById(int PieId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdatePie(Pie pie)
         {
             throw new NotImplementedException();
         }

@@ -1,4 +1,14 @@
-﻿<html xmlns="http://www.w3.org/1999/xhtml">
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity.EntityFrameworkCore
+@using AspNetCoreApp.Security;
+
+@inject SignInManager<ApplicationUser> SignInManager
+@*@inject IAuthorizationService AuthorizationService
+    @inject UserManager<ApplicationUser> UserManager*@
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Pie Shop</title>
 
@@ -25,6 +35,10 @@
                     @await Component.InvokeAsync("CategoryMenu")
                     <li><a asp-controller="Contact" asp-action="Index">Contact us</a></li>
                     @await Component.InvokeAsync("ShoppingCartSummary")
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        @await Component.InvokeAsync("AdminMenu")
+                    }
                 </ul>
                 @await Html.PartialAsync("LoginPartial")
             </div>
@@ -35,7 +49,7 @@
         <div class="row">
             <div class="col-md-3">
                 <p class="lead">
-                    <img class="img-responsive" alt="Bethany's Pie Shop'" src="~/Images/bethanylogo.png" />
+                    @*<img class="img-responsive" alt="Bethany's Pie Shop'" src="~/Images/bethanylogo.png" />*@
                 </p>
             </div>
             <div class="col-md-8">

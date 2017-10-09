@@ -10,5 +10,9 @@ namespace AspNetCoreApp.Models.Repositories
 
 
         Pie GetPieById(int PieId);
+
+        void CreatePie(Pie pie);
+
+        void UpdatePie(Pie pie);
     }
 }
