@@ -4,6 +4,7 @@ using AspNetCoreApp.Security;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +37,8 @@ namespace AspNetCoreApp
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddScoped(sp => ShoppingCart.GetCart(sp));
 
+            services.AddAntiforgery();
+            services.AddMvcCore(opt => opt.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
 
             services.AddMvcCore()
                 .AddAuthorization(options =>

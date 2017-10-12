@@ -15,6 +15,7 @@ namespace AspNetCoreApp.Models
         public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<PieReview> PieReviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

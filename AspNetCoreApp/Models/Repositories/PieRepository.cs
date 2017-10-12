@@ -18,7 +18,7 @@ namespace AspNetCoreApp.Models.Repositories
         public IEnumerable<Pie> PiesOftheWeek => _db.Pies.Include(c => c.Category).Where(p => p.IsPieOfTheWeek);
 
         public Pie GetPieById(int PieId) =>
-            _db.Pies.FirstOrDefault(p => p.PieId == PieId);
+            _db.Pies.Include(p => p.PieReviews).FirstOrDefault(p => p.PieId == PieId);
 
         public void UpdatePie(Pie pie)
         {

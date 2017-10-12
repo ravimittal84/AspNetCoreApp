@@ -1,7 +1,6 @@
 ﻿using AspNetCoreApp.Models;
 using AspNetCoreApp.Models.Repositories;
 using AspNetCoreApp.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,8 +9,8 @@ using System.Linq;
 
 namespace AspNetCoreApp.Controllers
 {
-    [Authorize(Roles = "Admin")]
-    [Authorize(Policy = "DeletePie")]
+    //[Authorize(Roles = "Admin")]
+    //[Authorize(Policy = "DeletePie")]
     public class PieManagementController : Controller
     {
         private readonly IPieRepository _pieRepository;
@@ -61,7 +60,7 @@ namespace AspNetCoreApp.Controllers
             if (ModelState.IsValid)
             {
                 _pieRepository.CreatePie(pieEditViewModel.Pie);
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
 
             return View(pieEditViewModel);
@@ -97,7 +96,7 @@ namespace AspNetCoreApp.Controllers
             if (ModelState.IsValid)
             {
                 _pieRepository.UpdatePie(pieEditViewModel.Pie);
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             return View(pieEditViewModel);
         }
