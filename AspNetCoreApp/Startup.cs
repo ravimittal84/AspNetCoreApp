@@ -5,10 +5,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 
 namespace AspNetCoreApp
 {
@@ -33,7 +36,7 @@ namespace AspNetCoreApp
 
             services.AddTransient<ICategoryRepository, CategoryRepository>();
             services.AddTransient<IPieRepository, PieRepository>();
-            services.AddTransient<IPieRepository, PieRepository>();
+            services.AddTransient<IPieReviewRepository, PieReviewRepository>();
             services.AddTransient<IOrderRepository, OrderRepository>();
             services.AddScoped(sp => ShoppingCart.GetCart(sp));
 
@@ -73,12 +76,29 @@ namespace AspNetCoreApp
             });
 
             //services.AddMemoryCache();
-            services.AddDistributedMemoryCache();
+            //services.AddDistributedMemoryCache();
+
+            // redis cache
+            services.AddDistributedRedisCache(options =>
+            {
+                options.InstanceName = "AspNetCoreApp";
+                options.Configuration = "localhost";
+            });
             services.AddSession();
+
+            //response compression with gzip (performance chapter)
+            services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "image/jpeg" });
+            });
+
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level = System.IO.Compression.CompressionLevel.Optimal);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -86,8 +106,16 @@ namespace AspNetCoreApp
             }
             app.UseStatusCodePages();
             app.UseStaticFiles();
+
             app.UseSession();
+
             app.UseAuthentication();
+
+            loggerFactory.AddConsole(LogLevel.Debug);
+            loggerFactory.AddDebug(LogLevel.Debug);
+
+            app.UseResponseCompression();
+
             //app.UseMvcWithDefaultRoute();
             app.UseMvc(routes =>
             {

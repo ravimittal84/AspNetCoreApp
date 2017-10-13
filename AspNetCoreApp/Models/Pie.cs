@@ -1,5 +1,6 @@
 ﻿using AspNetCoreApp.Helpers.CustomValidation;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 namespace AspNetCoreApp.Models
@@ -28,6 +29,7 @@ namespace AspNetCoreApp.Models
         public int CategoryId { get; set; }
 
         // Navigation Props
+        [JsonIgnore]
         public virtual Category Category { get; set; }
         public virtual List<PieReview> PieReviews { get; set; }
     }
